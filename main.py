@@ -47,13 +47,13 @@ def agregar_pelicula(movie: dict):
 
 # PUT
 @app.put("/movies")
-def actualizar_pelicula(title: str, year: int, movie: dict):
+def actualizar_pelicula(title: str, year: int, new_data: dict):
     # Buscar película
-    for m in movies:
-        if m["title"].lower() == title.lower() and m["year"] == year:
+    for movie in movies:
+        if movie["title"].lower() == title.lower() and movie["year"] == year:
             # Actualizar solo los campos pasados como parámetro
-            for key, value in movie.items():
-                m[key] = value
+            for key, value in new_data.items():
+                movie[key] = value
             return {"mensaje": "Película actualizada.", "pelicula": m}
     # Si no encuentra la película
     return {"error": "Película no encontrada"}
