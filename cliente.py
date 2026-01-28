@@ -1,28 +1,46 @@
 import requests
 import json
 
-URL = "http://127.0.0.1:8000/movies"
 
-def buscar_pelicula(title: str = "", year: int | None = None) -> None:
-    params = {"title": title}
-    if year:
+URL = "http://127.0.0.1:8000/movies"
+USERNAME = input("Usuario: ")
+PASSWORD = input("Contraseña: ")
+auth = (USERNAME, PASSWORD)
+
+
+# Etapa 3: Desarrollar el cliente API
+def buscar_pelicula(title: str = "", year: int | None = None, genre: str = "", cast: str = "") -> None:
+    params = {}
+    
+    if title:
+        params["title"] = title
+    if year is not None:
         params["year"] = year
+    if genre:
+        params["genre"] = genre
+    if cast:
+        params["cast"] = cast
+        
     response = requests.get(f"{URL}/search", params=params)
     print(json.dumps(response.json(), indent=2))
 
-def agregar_pelicula(movie: dict) -> None:
-    response = requests.post(URL, json=movie)
+
+def agregar_pelicula(movie: dict, auth: tuple) -> None:
+    response = requests.post(URL, json=movie, auth=auth)
     print(response.json())
 
-def actualizar_pelicula(title: str, year: int, new_data: dict) -> None:
+
+def actualizar_pelicula(title: str, year: int, new_data: dict, auth: tuple) -> None:
     params = {"title": title, "year": year}
-    response = requests.put(URL, params=params, json=new_data)
+    response = requests.put(URL, params=params, json=new_data, auth=auth)
     print(response.json())
 
-def eliminar_pelicula(title: str, year: int) -> None:
+
+def eliminar_pelicula(title: str, year: int, auth: tuple) -> None:
     params = {"title": title, "year": year}
-    response = requests.delete(URL, params=params)
+    response = requests.delete(URL, params=params, auth=auth)
     print(response.json())
+
 
 def main() -> None:
     while True:
@@ -36,12 +54,15 @@ def main() -> None:
 
 
         if opcion == "1":
-            titulo = input("Ingrese título: ").strip()
+            titulo = input("Ingrese título (enter para omitir): ").strip()
             anio = input("Ingrese año (enter para omitir): ").strip()
+            genero = input("Ingrese género (enter para omitir): ").strip()
+            actor = input("Ingrese actor (enter para omitir): ").strip()
+
             if anio:
-                buscar_pelicula(titulo, int(anio))
-            else:
-                buscar_pelicula(titulo)
+                buscar_pelicula(title=titulo, year=int(anio), genre=genero, cast=actor)
+            else: 
+                buscar_pelicula(title=titulo, genre=genero, cast=actor)
              
 
         elif opcion == "2":
@@ -58,7 +79,7 @@ def main() -> None:
                 "href": None
             }
 
-            agregar_pelicula(movie)
+            agregar_pelicula(movie, auth)
 
 
         elif opcion == "3":
@@ -97,7 +118,7 @@ def main() -> None:
                 cambios["thumbnail_height"] = int(nuevo_height)
 
             if cambios:
-                actualizar_pelicula(titulo, anio, cambios)
+                actualizar_pelicula(titulo, anio, cambios, auth)
             else:
                 print("No se ingresaron cambios.")
 
@@ -105,7 +126,7 @@ def main() -> None:
         elif opcion == "4":
             titulo = input("Ingrese título: ")
             anio = int(input("Ingrese año: "))
-            eliminar_pelicula(titulo, anio)
+            eliminar_pelicula(titulo, anio, auth)
 
 
         elif opcion == "5":
