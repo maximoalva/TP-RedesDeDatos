@@ -1,3 +1,5 @@
+import json
+import os
 import requests
 from fastapi import FastAPI, HTTPException, status, Request, Depends
 from fastapi.security import HTTPBasic, HTTPBasicCredentials
@@ -28,9 +30,25 @@ def verificar_credenciales(credenciales: HTTPBasicCredentials = Depends(security
 
 
 # ETAPA 1: Elección y consulta de los datos
-# Descargar y leer el archivo JSON
-response = requests.get("https://raw.githubusercontent.com/prust/wikipedia-movie-data/master/movies.json")
-movies = response.json()
+# Si existe el archivo JSON, cargarlo
+if os.path.exists('movies.json'):
+    with open('movies.json', 'r', encoding='utf-8') as archivo:
+        movies = json.load(archivo)
+# Sino, descargarlo
+else:
+    response = requests.get('https://raw.githubusercontent.com/prust/wikipedia-movie-data/master/movies.json')
+    movies = response.json()
+    with open('movies.json', 'w', encoding='utf-8') as archivo:
+        json.dump(movies, archivo, ensure_ascii=False, indent=2)
+        
+
+# Función para guardar cambios en el JSON       
+def guardar_datos():
+    """
+    Escribe en disco los cambios realizados sobre los datos almacenados en memoria.
+    """
+    with open('movies.json', 'w', encoding='utf-8') as archivo:
+        json.dump(movies, archivo, ensure_ascii=False, indent=2)
 
 
 # ETAPA 2: Desarrollar el servidor API
@@ -97,6 +115,7 @@ def buscar_pelicula(title: str = "", year: int | None = None, genre: str = "", c
 @app.post("/movies")
 def agregar_pelicula(movie: dict, user: str = Depends(verificar_credenciales)):
     movies.append(movie)
+    guardar_datos()
     return {"mensaje": "Película agregada."}
 
 # PUT
@@ -108,6 +127,7 @@ def actualizar_pelicula(title: str, year: int, new_data: dict, user: str = Depen
             # Actualizar solo los campos pasados como parámetro
             for key, value in new_data.items():
                 movie[key] = value
+            guardar_datos()
             return {"mensaje": "Película actualizada.", "pelicula": movie}
     # Si no encuentra la película
     return {"error": "Película no encontrada"}
@@ -119,6 +139,7 @@ def eliminar_pelicula(title: str, year: int, user: str = Depends(verificar_crede
     for movie in movies[:]: # recorremos copia de la lista
         if movie["title"].lower() == title.lower() and movie["year"] == year:
             movies.remove(movie)
+            guardar_datos()
             return {"mensaje": "Película eliminada."}
     # Si no encuentra la película
     return {"error": "Película no encontrada"}
