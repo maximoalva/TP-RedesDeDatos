@@ -3,13 +3,15 @@ Redes de Datos - Tecnicatura Universitaria en Inteligencia Artificial
 
 Facultad de Ciencias Exactas, Ingenieria y Agrimensura - Universidad Nacional de Rosario
 
+---
+
 ## ⚙️ Requisitos
 Se recomienda utilizar un entorno virtual e instalar las siguientes dependencias:
 - requests
 - fastapi
 - uvicorn
 
-### 🛠️ Instalación
+### Instalación
 ```bash
 # 1. Crear y activar entorno virtual (opcional pero recomendado).
 python -m venv venv
@@ -22,6 +24,8 @@ python.exe -m pip install --upgrade pip
 # 3. Instalar dependencias.
 pip install requests fastapi uvicorn
 ```
+
+---
 
 ## ▶️ Ejecución
 ### Iniciar el servidor
@@ -43,10 +47,14 @@ Credenciales por defecto:
 - Usuario: admin
 - Contraseña: 1234
 
+---
+
 ## 🧪 Datos
 Los datos utilizados en este trabajo provienen de una base de datos obtenida mediante técnicas de scraping, que contiene información sobre películas estadounidenses extraídas de Wikipedia. Esta se encuentra disponible públicamente en el siguiente repositorio:
 
 https://raw.githubusercontent.com/prust/wikipedia-movie-data/master/movies.json
+
+---
 
 ## 👥 Autor
 - Alva Máximo
