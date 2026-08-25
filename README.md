@@ -1,7 +1,9 @@
 # 📡 Comunicación API Cliente-Servidor
-Redes de Datos - Tecnicatura Universitaria en Inteligencia Artificial
 
-Facultad de Ciencias Exactas, Ingenieria y Agrimensura - Universidad Nacional de Rosario
+> Redes de Datos  
+> Tecnicatura Universitaria en Inteligencia Artificial (Universidad Nacional de Rosario)  
+> Máximo Alva  
+> 2026
 
 ---
 
